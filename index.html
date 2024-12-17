@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Download</title>
+</head>
+<body>
+    <h1>Upload and Download Files</h1>
+
+    <!-- File Upload Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="fileInput">Upload File:</label>
+        <input type="file" id="fileInput" name="file" required>
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+
+    <hr>
+
+    <!-- File Download Section -->
+    <h2>Available Files for Download:</h2>
+    <ul id="fileList"></ul>
+
+    <script>
+        const uploadedFiles = []; // Array to store file information
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            uploadedFiles.push(file);
+
+            updateFileList();
+            alert(`File "${file.name}" uploaded successfully!`);
+            fileInput.value = ''; // Clear the input
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            uploadedFiles.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+
+                link.textContent = file.name;
+                link.href = URL.createObjectURL(file);
+                link.download = file.name; // Set the download attribute
+                link.onclick = () => setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Clean up URL after 10 seconds
+
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
